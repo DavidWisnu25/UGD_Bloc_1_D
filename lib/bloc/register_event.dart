@@ -2,6 +2,10 @@ abstract class RegisterEvent {}
 
 class IsPasswordVisibleChanged extends RegisterEvent {}
 
+class NoTelponChanged extends RegisterEvent {}
+
+class SelectedDateChanged extends RegisterEvent {}
+
 class FormSubmitted extends RegisterEvent {
   String username;
   String email;

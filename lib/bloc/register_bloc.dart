@@ -4,11 +4,14 @@ import 'package:ugd_bloc/bloc/register_event.dart';
 import 'package:ugd_bloc/bloc/register_state.dart';
 import 'package:ugd_bloc/repository/register_repository.dart';
 
-class LoginBloc extends Bloc<RegisterEvent, RegisterState> {
+class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final RegisterRepository registerRepository = RegisterRepository();
-  LoginBloc() : super(RegisterState()) {
+  RegisterBloc() : super(RegisterState()) {
     on<IsPasswordVisibleChanged>(
         (event, emit) => _onIsPasswordVisibleChanged(event, emit));
+
+    //on<NoTelponChanged>((event, emit) => _onNoTelponChanged(event, emit));
+
     on<FormSubmitted>((event, emit) => _onFormSubmitted(event, emit));
   }
   void _onIsPasswordVisibleChanged(
@@ -18,6 +21,16 @@ class LoginBloc extends Bloc<RegisterEvent, RegisterState> {
       formSubmissionState: const InitialFormState(),
     ));
   }
+
+  //Bagian ini masih error
+  // void _onNoTelponChanged(NoTelponChanged event, Emitter<RegisterState> emit) {
+  //   emit(state.copyWith(noTelpon: event.noTelpon));
+  // }
+
+  // void _onSelectedDateChanged(
+  //     SelectedDateChanged event, Emitter<RegisterState> emit) {
+  //   emit(state.copyWith(selectedDate: event.selectedDate));
+  // }
 
   void _onFormSubmitted(
       FormSubmitted event, Emitter<RegisterState> emit) async {
