@@ -1,3 +1,5 @@
+import 'package:ugd_bloc/model/globalData.dart';
+
 import '../model/user.dart';
 
 class FailedLogin implements Exception {
@@ -7,17 +9,20 @@ class FailedLogin implements Exception {
 }
 
 class LoginRepository {
-  String username = "User";
-  String password = "123";
 
   Future<User> login(String username, String password) async {
-    User userData = User();
-    await Future.delayed(Duration(seconds: 3), () {
-      if (this.username == username && this.password == password) {
-        userData = User(name: username, password: password, token: "12345");
-      } else if (username == '' || password == '') {
-        throw 'Username or password cannot be empty';
-      } else {
+    User userData = User(name: "", password: "");
+    await Future.delayed(Duration(seconds: 1), () {
+      if (username == '' || password == '') {
+        throw 'Username or Password cannot be empty';
+      }
+      for (User user in globalData.listUsers) {
+        if (user.name == username && user.password == password) {
+          userData = user;
+          break;
+        }
+      }
+      if (userData.name == '' || userData.password == '') {
         throw FailedLogin();
       }
     });

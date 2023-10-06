@@ -10,8 +10,8 @@ class FormSubmitted extends RegisterEvent {
   String username;
   String email;
   String password;
-  int noTelpon;
-  DateTime selectedDate;
+  String noTelpon;
+  String selectedDate;
 
   FormSubmitted(
       {required this.username,

@@ -4,6 +4,7 @@ import 'package:ugd_bloc/bloc/form_submission_state.dart';
 import 'package:ugd_bloc/bloc/login_bloc.dart';
 import 'package:ugd_bloc/bloc/login_event.dart';
 import 'package:ugd_bloc/bloc/login_state.dart';
+import 'package:ugd_bloc/page/register_page.dart';
 
 class Loginview extends StatefulWidget {
   const Loginview({super.key});
@@ -110,6 +111,20 @@ class _LoginviewState extends State<Loginview> {
                           ),
                         ),
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Belum mempunyai akun ?"),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => const Registerview()));
+                              },
+                              child: Text('Register'))
+                        ],
+                      )
                     ],
                   ),
                 ),
