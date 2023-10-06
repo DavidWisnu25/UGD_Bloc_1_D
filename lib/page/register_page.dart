@@ -18,6 +18,7 @@ class _RegisterviewState extends State<Registerview> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool isPasswordVisible = false;
+  DateTime selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -97,39 +98,40 @@ class _RegisterviewState extends State<Registerview> {
                         validator: (value) =>
                             value == '' ? 'Please Enter your password' : null,
                       ),
-                      //Bagian yang di comment masih error (Untuk noTelpon & pemilihan tanggal), lihat file register_bloc.dart
-                      // TextFormField(
-                      //   keyboardType: TextInputType.number, // Set keyboard type to number
-                      //   decoration: const InputDecoration(
-                      //     prefixIcon: Icon(Icons.phone),
-                      //     labelText: 'Phone Number',
-                      //   ),
-                      //   validator: (value) =>
-                      //       value.isEmpty ? 'Please enter your phone number' : null,
-                      //   onChanged: (value) {
-                      //     // Parse the input text as an integer and assign it to noTelpon
-                      //     context.read<RegisterBloc>().add(NoTelponChanged(int.tryParse(value) ?? 0));
-                      //   },
-                      // ),
-                      // ElevatedButton(
-                      //   onPressed: () async {
-                      //     final DateTime pickedDate = await showDatePicker(
-                      //       context: context,
-                      //       initialDate: selectedDate, // Set the initial date
-                      //       firstDate: DateTime(2000),
-                      //       lastDate: DateTime(2101),
-                      //     );
+                     
+                       TextFormField(
+                         keyboardType: TextInputType.number, // Set keyboard type to number
+                         decoration: const InputDecoration(
+                           prefixIcon: Icon(Icons.phone),
+                           labelText: 'Phone Number',
+                         ),
+                         validator: (value) =>
+                             value!.isEmpty ? 'Please enter your phone number' : null,
+                         onChanged: (value) {
+                           // Parse the input text as an integer and assign it to noTelpon
+                           context.read<RegisterBloc>().add(NoTelponChanged(int.tryParse(value) ?? 0));
+                         },
+                       ),
+                       ElevatedButton(
+                         onPressed: () async {
+                          final DateTime? pickedDate = await showDatePicker(
+                             context: context,
+                             initialDate: selectedDate, // Set the initial date
+                             firstDate: DateTime(2000),
+                             lastDate: DateTime(2101),
+                           );
 
-                      //     if (pickedDate != null && pickedDate != selectedDate) {
-                      //       // Update the selectedDate if a new date is picked
-                      //       context.read<RegisterBloc>().add(SelectedDateChanged(pickedDate));
-                      //     }
-                      //   },
-                      //   child: Text(
-                      //     'Select Date',
-                      //     style: TextStyle(color: Colors.white),
-                      //   ),
-                      // ),
+                           if (pickedDate != null) {
+                             // Update the selectedDate if a new date is picked
+                             selectedDate = pickedDate;
+                             context.read<RegisterBloc>().add(SelectedDateChanged(pickedDate));
+                           }
+                         },
+                         child: Text(
+                           'Select Date',
+                           style: TextStyle(color: Colors.white),
+                         ),
+                       ),
 
                       const SizedBox(height: 30),
                       SizedBox(
