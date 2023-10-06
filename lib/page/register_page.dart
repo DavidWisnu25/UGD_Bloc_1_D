@@ -17,6 +17,7 @@ class _RegisterviewState extends State<Registerview> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
   bool isPasswordVisible = false;
   DateTime selectedDate = DateTime.now();
 
@@ -29,7 +30,7 @@ class _RegisterviewState extends State<Registerview> {
           if (state.formSubmissionState is SubmissionSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Login Success'),
+                content: Text('Registration Success'),
               ),
             );
           }
@@ -112,26 +113,33 @@ class _RegisterviewState extends State<Registerview> {
                            context.read<RegisterBloc>().add(NoTelponChanged(int.tryParse(value) ?? 0));
                          },
                        ),
-                       ElevatedButton(
-                         onPressed: () async {
-                          final DateTime? pickedDate = await showDatePicker(
-                             context: context,
-                             initialDate: selectedDate, // Set the initial date
-                             firstDate: DateTime(2000),
-                             lastDate: DateTime(2101),
-                           );
+                       TextFormField(
+                          controller: dateController,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            labelText: 'Select Date',
+                            hintText: 'Born Date', // Tambahkan hintText untuk menampilkan teks saat belum ada tanggal yang dipilih
+                            prefixIcon: Icon(Icons.date_range),
+                          ),
+                          onTap: () async {
+                            final DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: selectedDate,
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2101),
+                            );
 
-                           if (pickedDate != null) {
-                             // Update the selectedDate if a new date is picked
-                             selectedDate = pickedDate;
-                             context.read<RegisterBloc>().add(SelectedDateChanged(pickedDate));
-                           }
-                         },
-                         child: Text(
-                           'Select Date',
-                           style: TextStyle(color: Colors.white),
-                         ),
-                       ),
+                            if (pickedDate != null) {
+                              selectedDate = pickedDate;
+                              dateController.text =
+                                  selectedDate.toLocal().toString().split(' ')[0];
+                            }
+                          },
+                          validator: (value) =>
+                              value == '' ? 'Please Enter your date' : null,
+                        ),
+
+
 
                       const SizedBox(height: 30),
                       SizedBox(
@@ -156,7 +164,7 @@ class _RegisterviewState extends State<Registerview> {
                             child: state.formSubmissionState is FormSubmitting
                                 ? const CircularProgressIndicator(
                                     color: Colors.white)
-                                : const Text("Login"),
+                                : const Text("Register"),
                           ),
                         ),
                       ),
