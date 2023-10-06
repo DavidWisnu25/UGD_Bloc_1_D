@@ -1,4 +1,5 @@
 import '../model/user.dart';
+import 'register_repository.dart';
 
 class FailedLogin implements Exception {
   String errorMessage() {
@@ -7,19 +8,18 @@ class FailedLogin implements Exception {
 }
 
 class LoginRepository {
-  String username = "User";
-  String password = "123";
+  List<User> data = RegisterRepository.data;
 
   Future<User> login(String username, String password) async {
     User userData = User();
-    await Future.delayed(Duration(seconds: 3), () {
-      if (this.username == username && this.password == password) {
-        userData = User(name: username, password: password, token: "12345");
-      } else if (username == '' || password == '') {
-        throw 'Username or password cannot be empty';
-      } else {
-        throw FailedLogin();
+    await Future.delayed(const Duration(seconds: 3), () {
+      for (User temp in data) {
+        if (temp.name == username && temp.password == password) {
+          userData = temp;
+          return userData;
+        }
       }
+      throw FailedLogin();
     });
     return userData;
   }

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ugd_bloc/bloc/form_submission_state.dart';
 import 'package:ugd_bloc/bloc/register_bloc.dart';
 import 'package:ugd_bloc/bloc/register_event.dart';
 import 'package:ugd_bloc/bloc/register_state.dart';
+import 'package:ugd_bloc/page/login_page.dart';
 
-class Registerview extends StatefulWidget {
-  const Registerview({super.key});
+class RegisterView extends StatefulWidget {
+  const RegisterView({super.key});
 
   @override
-  State<Registerview> createState() => _RegisterviewState();
+  State<RegisterView> createState() => _RegisterviewState();
 }
 
-class _RegisterviewState extends State<Registerview> {
+class _RegisterviewState extends State<RegisterView> {
   final formKey = GlobalKey<FormState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -28,9 +30,15 @@ class _RegisterviewState extends State<Registerview> {
       child: BlocListener<RegisterBloc, RegisterState>(
         listener: (context, state) {
           if (state.formSubmissionState is SubmissionSuccess) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const LoginView(),
+              ),
+            );
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Registration Success'),
+                content: Text('Register Success'),
               ),
             );
           }
@@ -66,14 +74,19 @@ class _RegisterviewState extends State<Registerview> {
                             value == '' ? 'Please enter your username' : null,
                       ),
                       TextFormField(
-                        controller: emailController,
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.person),
-                          labelText: 'Email',
-                        ),
-                        validator: (value) =>
-                            value == '' ? 'Please enter your email' : null,
-                      ),
+                          controller: emailController,
+                          decoration: const InputDecoration(
+                            prefixIcon: Icon(Icons.email),
+                            labelText: 'Email',
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your email';
+                            } else if (!value.contains('@')) {
+                              return 'Email must contain the "@" symbol';
+                            }
+                            return null;
+                          }),
                       TextFormField(
                         controller: passwordController,
                         decoration: InputDecoration(
@@ -86,61 +99,66 @@ class _RegisterviewState extends State<Registerview> {
                                   );
                             },
                             icon: Icon(
-                              isPasswordVisible
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
+                              state.isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                               color: state.isPasswordVisible
-                                  ? Colors.grey
-                                  : Colors.blue,
+                                  ? Colors.blue
+                                  : Colors.grey,
                             ),
                           ),
                         ),
-                        obscureText: state.isPasswordVisible,
+                        obscureText: !state.isPasswordVisible,
                         validator: (value) =>
-                            value == '' ? 'Please Enter your password' : null,
+                            value == '' ? 'Please enter your password' : null,
                       ),
-                     
-                       TextFormField(
-                         keyboardType: TextInputType.number, // Set keyboard type to number
-                         decoration: const InputDecoration(
-                           prefixIcon: Icon(Icons.phone),
-                           labelText: 'Phone Number',
-                         ),
-                         validator: (value) =>
-                             value!.isEmpty ? 'Please enter your phone number' : null,
-                         onChanged: (value) {
-                           // Parse the input text as an integer and assign it to noTelpon
-                           context.read<RegisterBloc>().add(NoTelponChanged(int.tryParse(value) ?? 0));
-                         },
-                       ),
-                       TextFormField(
-                          controller: dateController,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            labelText: 'Select Date',
-                            hintText: 'Born Date', // Tambahkan hintText untuk menampilkan teks saat belum ada tanggal yang dipilih
-                            prefixIcon: Icon(Icons.date_range),
-                          ),
-                          onTap: () async {
-                            final DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: selectedDate,
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2101),
-                            );
-
-                            if (pickedDate != null) {
-                              selectedDate = pickedDate;
-                              dateController.text =
-                                  selectedDate.toLocal().toString().split(' ')[0];
-                            }
-                          },
-                          validator: (value) =>
-                              value == '' ? 'Please Enter your date' : null,
+                      TextFormField(
+                        keyboardType:
+                            TextInputType.number, // Set keyboard type to number
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.phone),
+                          labelText: 'Phone Number',
                         ),
+                        validator: (value) => value!.isEmpty
+                            ? 'Please enter your phone number'
+                            : null,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        onChanged: (value) {
+                          // Parse the input text as an integer and assign it to noTelpon
+                          context
+                              .read<RegisterBloc>()
+                              .add(NoTelponChanged(int.tryParse(value) ?? 0));
+                        },
+                      ),
+                      TextFormField(
+                        controller: dateController,
+                        readOnly: true,
+                        decoration: const InputDecoration(
+                            labelText: 'Born Date',
+                            prefixIcon: Icon(Icons.date_range),
+                            suffixIcon: Icon(
+                              Icons.calendar_today,
+                              color: Colors.blue,
+                            )),
+                        onTap: () async {
+                          final DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: selectedDate,
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2101),
+                          );
 
-
-
+                          if (pickedDate != null) {
+                            selectedDate = pickedDate;
+                            dateController.text =
+                                selectedDate.toLocal().toString().split(' ')[0];
+                          }
+                        },
+                        validator: (value) =>
+                            value == '' ? 'Please enter your born date' : null,
+                      ),
                       const SizedBox(height: 30),
                       SizedBox(
                         width: double.infinity,
@@ -159,7 +177,7 @@ class _RegisterviewState extends State<Registerview> {
                             }
                           },
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 vertical: 16.0, horizontal: 16.0),
                             child: state.formSubmissionState is FormSubmitting
                                 ? const CircularProgressIndicator(
