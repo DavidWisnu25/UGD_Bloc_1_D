@@ -13,8 +13,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     on<NoTelponChanged>((event, emit) => _onNoTelponChanged(event, emit));
 
     on<FormSubmitted>((event, emit) => _onFormSubmitted(event, emit));
-  
-    on<SelectedDateChanged>((event, emit) => _onSelectedDateChanged(event, emit));
+
+    on<SelectedDateChanged>(
+        (event, emit) => _onSelectedDateChanged(event, emit));
   }
   void _onIsPasswordVisibleChanged(
       IsPasswordVisibleChanged event, Emitter<RegisterState> emit) {
@@ -24,21 +25,20 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     ));
   }
 
-  
-   void _onNoTelponChanged(NoTelponChanged event, Emitter<RegisterState> emit) {
-     emit(state.copyWith(noTelpon: event.noTelpon));
-   }
+  void _onNoTelponChanged(NoTelponChanged event, Emitter<RegisterState> emit) {
+    emit(state.copyWith(noTelpon: event.noTelpon));
+  }
 
-   void _onSelectedDateChanged(
-       SelectedDateChanged event, Emitter<RegisterState> emit) {
-     emit(state.copyWith(selectedDate: event.selectedDate));
+  void _onSelectedDateChanged(
+      SelectedDateChanged event, Emitter<RegisterState> emit) {
+    emit(state.copyWith(selectedDate: event.selectedDate));
   }
 
   void _onFormSubmitted(
       FormSubmitted event, Emitter<RegisterState> emit) async {
     emit(state.copyWith(formSubmissionState: FormSubmitting()));
     try {
-      await registerRepository.login(event.username, event.password);
+      await registerRepository.register(event.username, event.password);
       emit(state.copyWith(formSubmissionState: SubmissionSuccess()));
     } on FailedRegister catch (e) {
       emit(state.copyWith(

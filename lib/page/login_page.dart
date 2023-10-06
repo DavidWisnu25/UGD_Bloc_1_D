@@ -6,14 +6,14 @@ import 'package:ugd_bloc/bloc/login_event.dart';
 import 'package:ugd_bloc/bloc/login_state.dart';
 import 'package:ugd_bloc/page/register_page.dart';
 
-class Loginview extends StatefulWidget {
-  const Loginview({super.key});
+class LoginView extends StatefulWidget {
+  const LoginView({super.key});
 
   @override
-  State<Loginview> createState() => _LoginviewState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginviewState extends State<Loginview> {
+class _LoginViewState extends State<LoginView> {
   final formKey = GlobalKey<FormState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -74,16 +74,16 @@ class _LoginviewState extends State<Loginview> {
                                   );
                             },
                             icon: Icon(
-                              isPasswordVisible
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
+                              state.isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                               color: state.isPasswordVisible
-                                  ? Colors.grey
-                                  : Colors.blue,
+                                  ? Colors.blue
+                                  : Colors.grey,
                             ),
                           ),
                         ),
-                        obscureText: state.isPasswordVisible,
+                        obscureText: !state.isPasswordVisible,
                         validator: (value) =>
                             value == '' ? 'Please Enter your password' : null,
                       ),
@@ -96,46 +96,62 @@ class _LoginviewState extends State<Loginview> {
                               onPressed: () {
                                 if (formKey.currentState!.validate()) {
                                   context.read<LoginBloc>().add(
-                                    FormSubmitted(
-                                      username: usernameController.text,
-                                      password: passwordController.text,
-                                    ),
-                                  );
+                                        FormSubmitted(
+                                          username: usernameController.text,
+                                          password: passwordController.text,
+                                        ),
+                                      );
                                 }
                               },
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 16.0, horizontal: 16.0),
-                                child: state.formSubmissionState is FormSubmitting
-                                    ? const CircularProgressIndicator(
-                                        color: Colors.white)
-                                    : const Text("Login"),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pushNamed('/register');
-                              },
-                              child: RichText(
-                                text: TextSpan(
-                                  text: 'Belum Mempunyai Akun? ',
-                                  style: TextStyle(color:  Colors.black),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: 'Register',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue,
-                                      ),
-                                    ),
-                                  ],
+                              style: ButtonStyle(
+                                minimumSize: MaterialStateProperty.all(
+                                  const Size(double.infinity, 48),
                                 ),
                               ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16.0, horizontal: 16.0),
+                                child:
+                                    state.formSubmissionState is FormSubmitting
+                                        ? const CircularProgressIndicator(
+                                            color: Colors.white)
+                                        : const Text("Login"),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'Belum mempunyai akun?',
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const RegisterView(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    'Register',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-
                     ],
                   ),
                 ),
