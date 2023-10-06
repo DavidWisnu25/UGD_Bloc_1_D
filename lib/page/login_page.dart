@@ -4,6 +4,7 @@ import 'package:ugd_bloc/bloc/form_submission_state.dart';
 import 'package:ugd_bloc/bloc/login_bloc.dart';
 import 'package:ugd_bloc/bloc/login_event.dart';
 import 'package:ugd_bloc/bloc/login_state.dart';
+import 'package:ugd_bloc/page/register_page.dart';
 
 class Loginview extends StatefulWidget {
   const Loginview({super.key});
@@ -89,27 +90,52 @@ class _LoginviewState extends State<Loginview> {
                       const SizedBox(height: 30),
                       SizedBox(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (formKey.currentState!.validate()) {
-                              context.read<LoginBloc>().add(
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  context.read<LoginBloc>().add(
                                     FormSubmitted(
                                       username: usernameController.text,
                                       password: passwordController.text,
                                     ),
                                   );
-                            }
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 16.0, horizontal: 16.0),
-                            child: state.formSubmissionState is FormSubmitting
-                                ? const CircularProgressIndicator(
-                                    color: Colors.white)
-                                : const Text("Login"),
-                          ),
+                                }
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 16.0, horizontal: 16.0),
+                                child: state.formSubmissionState is FormSubmitting
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.white)
+                                    : const Text("Login"),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pushNamed('/register');
+                              },
+                              child: RichText(
+                                text: TextSpan(
+                                  text: 'Belum Mempunyai Akun? ',
+                                  style: TextStyle(color:  Colors.black),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: 'Register',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+
                     ],
                   ),
                 ),

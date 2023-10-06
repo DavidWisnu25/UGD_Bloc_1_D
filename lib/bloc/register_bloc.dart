@@ -10,9 +10,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     on<IsPasswordVisibleChanged>(
         (event, emit) => _onIsPasswordVisibleChanged(event, emit));
 
-    //on<NoTelponChanged>((event, emit) => _onNoTelponChanged(event, emit));
+    on<NoTelponChanged>((event, emit) => _onNoTelponChanged(event, emit));
 
     on<FormSubmitted>((event, emit) => _onFormSubmitted(event, emit));
+  
+    on<SelectedDateChanged>((event, emit) => _onSelectedDateChanged(event, emit));
   }
   void _onIsPasswordVisibleChanged(
       IsPasswordVisibleChanged event, Emitter<RegisterState> emit) {
@@ -22,15 +24,15 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     ));
   }
 
-  //Bagian ini masih error
-  // void _onNoTelponChanged(NoTelponChanged event, Emitter<RegisterState> emit) {
-  //   emit(state.copyWith(noTelpon: event.noTelpon));
-  // }
+  
+   void _onNoTelponChanged(NoTelponChanged event, Emitter<RegisterState> emit) {
+     emit(state.copyWith(noTelpon: event.noTelpon));
+   }
 
-  // void _onSelectedDateChanged(
-  //     SelectedDateChanged event, Emitter<RegisterState> emit) {
-  //   emit(state.copyWith(selectedDate: event.selectedDate));
-  // }
+   void _onSelectedDateChanged(
+       SelectedDateChanged event, Emitter<RegisterState> emit) {
+     emit(state.copyWith(selectedDate: event.selectedDate));
+  }
 
   void _onFormSubmitted(
       FormSubmitted event, Emitter<RegisterState> emit) async {
